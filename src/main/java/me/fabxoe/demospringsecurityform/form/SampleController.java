@@ -38,15 +38,21 @@ public class SampleController {
     @GetMapping("/dashboard")
     public String dashboard(Model model, Principal principal) {
         model.addAttribute("message", "Hello " + principal.getName());
-        AccountContext.setAccount(accountRepository.findByUsername(principal.getName()));
+//        AccountContext.setAccount(accountRepository.findByUsername(principal.getName()));
         sampleService.dashboard();
         return "dashboard";
     }
 
     @GetMapping("/admin")
     public String admin(Model model, Principal principal) {
-        model.addAttribute("message", "Hello " + principal.getName());
+        model.addAttribute("message", "Hello Admin, " + principal.getName());
         return "admin";
+    }
+
+    @GetMapping("/user")
+    public String user(Model model, Principal principal) {
+        model.addAttribute("message", "Hello User, " + principal.getName());
+        return "user";
     }
 
 }
