@@ -1,9 +1,8 @@
 package me.fabxoe.demospringsecurityform.form;
 
-import me.fabxoe.demospringsecurityform.account.AccountContext;
-import me.fabxoe.demospringsecurityform.account.AccountRepository;
-import me.fabxoe.demospringsecurityform.account.AccountService;
-import me.fabxoe.demospringsecurityform.account.UserAccount;
+import me.fabxoe.demospringsecurityform.account.*;
+import me.fabxoe.demospringsecurityform.book.BookRepository;
+import me.fabxoe.demospringsecurityform.common.CurrentUser;
 import me.fabxoe.demospringsecurityform.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,13 +24,17 @@ public class SampleController {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    BookRepository bookRepository;
+
     @GetMapping("/")
 //    public String index(Model model, Principal principal) {//이건 자바에서 제공하는 principal이다. Spring Security의 principal이 아님.
-    public String index(Model model, @AuthenticationPrincipal UserAccount userAccount) {//이건 자바에서 제공하는 principal이다. Spring Security의 principal이 아님.
-        if (userAccount == null) {
+//    public String index(Model model, @AuthenticationPrincipal UserAccount userAccount) {//
+    public String index(Model model, @CurrentUser Account account) {//
+        if (account == null) {
             model.addAttribute("message", "Hello Spring Security");
         } else {
-            model.addAttribute("message", "Hello, " + userAccount.getUsername());
+            model.addAttribute("message", "Hello, " + account.getUsername());
         }
         return "index";
     }
@@ -60,6 +63,7 @@ public class SampleController {
     @GetMapping("/user")
     public String user(Model model, Principal principal) {
         model.addAttribute("message", "Hello User, " + principal.getName());
+        model.addAttribute("books", bookRepository.findCurrentUserBooks());
         return "user";
     }
 
